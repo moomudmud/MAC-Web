@@ -7,7 +7,7 @@ echo '
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert-dev.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css">';
 
-if (($_SESSION['role']<>'admin') OR empty($_SESSION['employee_id'])) {
+if (($_SESSION['role'] <> 'admin') or empty($_SESSION['employee_id'])) {
     echo '<script>
                 setTimeout(function() {
                 swal({
@@ -42,8 +42,7 @@ if (($_SESSION['role']<>'admin') OR empty($_SESSION['employee_id'])) {
             </div>
             <ul class="nav navbar-nav">
                 <li><a href="/MAC-Web/index.php"><span class="glyphicon glyphicon-home"></span> Home</a></li>
-                <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">ผู้ดูแลระบบ <span
-                            class="caret"></span></a>
+                <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">ผู้ดูแลระบบ <span class="caret"></span></a>
                     <ul class="dropdown-menu">
                         <li><a href="/MAC-Web/user_management/user.php">จัดการข้อมูลนักงาน</a></li>
                         <li><a href="#">Access Control</a></li>
@@ -54,7 +53,7 @@ if (($_SESSION['role']<>'admin') OR empty($_SESSION['employee_id'])) {
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="/MAC-Web/register/user_information.php"><span class="glyphicon glyphicon-user"></span>
-                        <?php echo $_SESSION["employee_id"];?></a></li>
+                        <?php echo $_SESSION["employee_id"]; ?></a></li>
                 <li><a href="/MAC-Web/register/logout.php"><span class="glyphicon glyphicon-log-out"></span> Logout</a>
                 </li>
             </ul>
@@ -64,12 +63,26 @@ if (($_SESSION['role']<>'admin') OR empty($_SESSION['employee_id'])) {
         <form action="" method="get">
             <div class="container">
                 <div class="row">
+                    <h3>บัญชีรายชื่อพนักงาน</h3>
+                    <table class="table table-striped  table-hover table-responsive table-bordered">
+                        <tr>
+                            <td>รหัสพนักงาน<input type="search" name="employee_id" class="form-control"></td>
+                            <td>ชื่อ <input type="search" name="name" class="form-control"> </td>
+                        </tr>
+
+                        <tr>
+                            <td>เบอร์โทรศัพท์ <input type="search" name="phone" class="form-control"></td>
+                            <td>อีเมล <input type="search" name="email" class="form-control"></td>
+                        <tr>
+                            <td align='right'><button type="submit" class="btn btn-primary">ค้นหาข้อมูล</button></a></td>
+                            <td align='left'><button type="submit" class="btn btn-primary">&nbsp;&nbsp;&nbsp;&nbsp;Export&nbsp;&nbsp;&nbsp;&nbsp;</button></a></td>
+
+                        </tr>
+                        </tr>
+                    </table>
                     <div class="col-md-12"> <br>
                         <table class="table table-striped  table-hover table-responsive table-bordered">
                             <thead>
-                                <h3>บัญชีรายชื่อพนักงาน</h3>
-                                <input type="search" name="q" class="form-control" placeholder="ใส่รหัสพนักงาน"> <br>
-                                <button type="submit" class="btn btn-primary">ค้นหาข้อมูล</button></a> <br>
                     </div>
                     <div class="col-md-12"> <br></div>
                     <tr>
@@ -100,58 +113,62 @@ if (($_SESSION['role']<>'admin') OR empty($_SESSION['employee_id'])) {
                         <?php
 
 
-                    if (isset($_GET['q'])) {
-                        $q = "%{$_GET['q']}%";
-                        $stmt = $conn->prepare("SELECT*
+                        if (isset($_GET['employee_id']) or isset($_GET['name']) or isset($_GET['phone']) or isset($_GET['email'])) {
+
+                            $employee_id = "%{$_GET['employee_id']}%";
+                            $name = "%{$_GET['name']}%";
+                            $phone = date("%{$_GET['phone']}%");
+                            $email = "%{$_GET['email']}%";
+                            $stmt = $conn->prepare("SELECT*
                                                     FROM mas_employees as  me
                                                     LEFT JOIN  mas_status as s ON me.status = s.status_id
-                                                    WHERE (employee_id LIKE ?) 
-                                
+                                                    WHERE (employee_id LIKE :employee_id OR :employee_id IS NULL)
+                                                    AND   (name        LIKE :name        OR :name        IS NULL)
+                                                    AND   (phone       LIKE :phone       OR :phone       IS NULL)
+                                                    AND   (email       LIKE :email       OR :email       IS NULL)
                                                     ");
-                        $stmt->execute([$q]);
-                        $result = $stmt->fetchAll();
-                    } else {
-                        $stmt = $conn->prepare("SELECT*
+                            $stmt->bindParam(':employee_id', $employee_id, PDO::PARAM_STR);
+                            $stmt->bindParam(':name', $name, PDO::PARAM_STR);
+                            $stmt->bindParam(':phone', $phone, PDO::PARAM_STR);
+                            $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+                            $stmt->execute();
+                            $result = $stmt->fetchAll();
+                        } else {
+                            $stmt = $conn->prepare("SELECT*
                                                     FROM mas_employees as  me
                                                     LEFT JOIN  mas_status as s ON me.status = s.status_id 
                                                     ");
-                        $stmt->execute();
-                        $result = $stmt->fetchAll();
-                    }
+                            $stmt->execute();
+                            $result = $stmt->fetchAll();
+                        }
 
 
-                    foreach ($result as $k) {
-                    ?>
-                        <tr>
-                            <td><?= $k['employee_id']; ?></td>
-                            <td><?= $k['name']; ?></td>
-                            <td><?= $k['lastname']; ?></td>
-                            <td><?= $k['phone']; ?></td>
-                            <td><?= $k['email']; ?></td>
-                            <td>
-                                <center><?= $k['status_name']; ?></center>
-                            </td>
-                            <td>
-                                <center><?= $k['role']; ?></center>
-                            </td>
-                            <td>
-                                <center><a
-                                        href="/MAC-Web/user_management/access.php?employee_id=<?= $k['employee_id']; ?>&is_visitor=0"
-                                        class="btn btn-info btn-sm">กำหนด</a></center>
-                            </td>
-                            <td>
-                                <center><a
-                                        href="/MAC-Web/user_management/edit_employee.php?employee_id=<?= $k['employee_id']; ?>"
-                                        class="btn btn-warning btn-sm">แก้ไข</a></center>
-                            </td>
-                            <td>
-                                <center><a href="delete_employess.php?employee_id=<?= $k['employee_id']; ?>"
-                                        class="btn btn-danger btn-sm"
-                                        onclick="return confirm('ยืนยันการลบข้อมูล !!');">ลบ</a></center>
-                            </td>
-                        </tr>
+                        foreach ($result as $k) {
+                        ?>
+                            <tr>
+                                <td><?= $k['employee_id']; ?></td>
+                                <td><?= $k['name']; ?></td>
+                                <td><?= $k['lastname']; ?></td>
+                                <td><?= $k['phone']; ?></td>
+                                <td><?= $k['email']; ?></td>
+                                <td>
+                                    <center><?= $k['status_name']; ?></center>
+                                </td>
+                                <td>
+                                    <center><?= $k['role']; ?></center>
+                                </td>
+                                <td>
+                                    <center><a href="/MAC-Web/user_management/access.php?employee_id=<?= $k['employee_id']; ?>&is_visitor=0" class="btn btn-info btn-sm">กำหนด</a></center>
+                                </td>
+                                <td>
+                                    <center><a href="/MAC-Web/user_management/edit_employee.php?employee_id=<?= $k['employee_id']; ?>" class="btn btn-warning btn-sm">แก้ไข</a></center>
+                                </td>
+                                <td>
+                                    <center><a href="delete_employess.php?employee_id=<?= $k['employee_id']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('ยืนยันการลบข้อมูล !!');">ลบ</a></center>
+                                </td>
+                            </tr>
 
-                        </tr>
+                            </tr>
                         <?php } ?>
                     </tbody>
                     </table>
@@ -173,21 +190,24 @@ if (($_SESSION['role']<>'admin') OR empty($_SESSION['employee_id'])) {
                             <tbody>
                                 <tr>
                                     <?php
-                                if (isset($_GET['q'])) {
-                                    $q = "%{$_GET['q']}%";
-                                    $stmt = $conn->prepare("SELECT* 
+                                    if (isset($_GET['employee_id'])) {
+
+                                        $employee_id = "%{$_GET['employee_id']}%";
+
+                                        $stmt = $conn->prepare("SELECT* 
                                                     FROM employees_access as e
                                                     LEFT JOIN  mas_status s ON e.status = s.status_id
                                                     LEFT JOIN  mas_access a ON e.access_id = a.access_id
                                                     LEFT JOIN  mas_group  g ON a.group_id = g.group_id
-                                                    WHERE (employee_id LIKE ?)
+                                                    WHERE (employee_id LIKE :employee_id OR :employee_id IS NULL)
                                                     AND  is_visitor = 0
                                                     ORDER BY a.group_id
                                                     ");
-                                    $stmt->execute([$q]);
-                                    $result = $stmt->fetchAll();
-                                } else {
-                                    $stmt = $conn->prepare("SELECT* 
+                                        $stmt->bindParam(':employee_id', $employee_id, PDO::PARAM_STR);
+                                        $stmt->execute();
+                                        $result = $stmt->fetchAll();
+                                    } else {
+                                        $stmt = $conn->prepare("SELECT* 
                                                     FROM employees_access as e
                                                     LEFT JOIN  mas_status s ON e.status = s.status_id
                                                     LEFT JOIN  mas_access a ON e.access_id = a.access_id
@@ -195,29 +215,27 @@ if (($_SESSION['role']<>'admin') OR empty($_SESSION['employee_id'])) {
                                                     WHERE is_visitor = 0
                                                     ORDER BY a.group_id
                                                     ");
-                                    $stmt->execute();
-                                    $result = $stmt->fetchAll();
-                                }
+                                        $stmt->execute();
+                                        $result = $stmt->fetchAll();
+                                    }
 
-                                foreach ($result as $k) {
-                                ?>
+                                    foreach ($result as $k) {
+                                    ?>
                                 <tr>
                                     <td><?= $k['employee_id']; ?></td>
                                     <td><?= $k['group_name']; ?></td>
                                     <td><?= $k['access_name']; ?></td>
                                     <td><?= $k['status_name']; ?></td>
                                     <td>
-                                        <center><a
-                                                href="/MAC-Web/user_management/access_status.php?employee_id=<?= $k['employee_id']; ?>&access_name=<?= $k['access_name']; ?>&access_id=<?= $k['access_id']; ?>"
-                                                class="btn btn-info btn-sm">ตั้งค่า</a></center>
+                                        <center><a href="/MAC-Web/user_management/access_status.php?employee_id=<?= $k['employee_id']; ?>&access_name=<?= $k['access_name']; ?>&access_id=<?= $k['access_id']; ?>" class="btn btn-info btn-sm">ตั้งค่า</a></center>
                                     </td>
 
                                 </tr>
 
                                 </tr>
-                                <?php } ?>
+                            <?php } ?>
 
-                                </tr>
+                            </tr>
                             </tbody>
                         </table>
                 </div>
