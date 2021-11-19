@@ -42,101 +42,119 @@ if (empty($_SESSION['id']) && empty($_SESSION['name']) && empty($_SESSION['lastn
             </div>
             <ul class="nav navbar-nav">
                 <li class="active"><a href="/MAC-Web/register/inside.php">Home</a></li>
-                <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">ผู้ดูแลระบบ <span class="caret"></span></a>
+                <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">ผู้ดูแลระบบ <span
+                            class="caret"></span></a>
                     <ul class="dropdown-menu">
-                    <li><a href="/MAC-Web/user_management/user.php">จัดการข้อมูลนักงาน</a></li>
+                        <li><a href="/MAC-Web/user_management/user.php">จัดการข้อมูลนักงาน</a></li>
                         <li><a href="#">Access Control</a></li>
                         <li><a href="/MAC-Web/user_management/visitor.php">ผู้มาเยือน</a></li>
-                        <li><a href="/MAC-Web/user_management/history.php">ประวัติศาสตร์การเข้า</a></li>
+                        <li><a href="/MAC-Web/user_management/history.php">บันทึกประวัติการเข้า</a></li>
                     </ul>
                 </li>p
                 <li><a href="#">Page 2</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-                <li><a href="/MAC-Web/register/logout.php"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+                <li><a href="/MAC-Web/register/logout.php"><span class="glyphicon glyphicon-log-out"></span> Logout</a>
+                </li>
             </ul>
         </div>
     </nav>
     <form action="" method="get">
-    <form action="" method="get">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12"> <br>
-                    <table class="table table-striped  table-hover table-responsive table-bordered">
-                        <thead>
-                            <h3>History log</h3>
-                            <input type="search" name="q" class="form-control" placeholder="ใส่รหัสพนักงาน"> <br>
-                            <button type="submit" class="btn btn-primary">ค้นหาข้อมูล</button></a> <br>
-                </div>
-                <div class="col-md-12"> <br></div>
-                <tr>
-                    <th>ชื่อ</th>
-                    <th>นามสกุล</th>
-                    <th>เบอร์โทรศัพท์</th>
-                    <th>Access Control</th>
-                    <th>
-                        <center>Date</center>
-                    </th>
-                    <th>
-                        <center>Time</center>
-                    </th>
-                    <th>
-                        <center>Activity</center>
-                    </th>
-    
+        <form action="" method="get">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12"> <br>
+                        <h3>ประวัติการเข้า</h3>
+                        <table class="table table-striped  table-hover table-responsive table-bordered">
+                            <tr>
+                                <td>เบอร์โทรศัพท์ <input type="search" name="q" class="form-control"></td>
+                                <td>ชื่อ <input type="search" name="q" class="form-control"> </td>
+                            </tr>
 
-                </tr>
-                </thead>
-                <tbody>
-                    <?php
+                            <tr>
+                                <td>วันที่ <input type="date" name="q" class="form-control"></td>
+                                <td>ห้อง <input type="search" name="q" class="form-control"> </td>
+                            </tr>
+                        </table>
+                        <table class="table table-striped  table-hover table-responsive table-bordered">
+                            <thead>
+                                <center><button type="submit" class="btn btn-primary">ค้นหาข้อมูล</button></a></center>
+                    </div>
+                    <div class="col-md-12"> <br></div>
+                    <tr>
+                        <th>ชื่อ</th>
+                        <th>นามสกุล</th>
+                        <th>เบอร์โทรศัพท์</th>
+                        <th>Access Control</th>
+                        <th>
+                            <center>Date</center>
+                        </th>
+                        <th>
+                            <center>Time</center>
+                        </th>
+                        <th>
+                            <center>Activity</center>
+                        </th>
 
 
-                    if (isset($_GET['q'])) {
-                        $q = "%{$_GET['q']}%";
-                        $stmt = $conn->prepare("SELECT*
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+
+
+                        if (isset($_GET['q'])) {
+                            $q = "%{$_GET['q']}%";
+                            $stmt = $conn->prepare("SELECT*
                                                     FROM history_log
                                                     WHERE (phone LIKE ?) 
                                 
                                                     ");
-                        $stmt->execute([$q]);
-                        $result = $stmt->fetchAll();
-                    } else {
-                        $stmt = $conn->prepare("SELECT* 
+                            $stmt->execute([$q]);
+                            $result = $stmt->fetchAll();
+                        } else {
+                            $stmt = $conn->prepare("SELECT* 
                                                     FROM history_log
                                                     ORDER BY date desc
                                                     
                                                     ");
-                        $stmt->execute();
-                        $result = $stmt->fetchAll();
-                    }
+                            $stmt->execute();
+                            $result = $stmt->fetchAll();
+                        }
 
 
-                    foreach ($result as $k) {
-                    ?>
+                        foreach ($result as $k) {
+                        ?>
                         <tr>
                             <td><?= $k['name']; ?></td>
                             <td><?= $k['lastname']; ?></td>
                             <td><?= $k['phone']; ?></td>
                             <td><?= $k['access']; ?></td>
-                            <td><center><?= $k['date']; ?></center></td>  
-                            
-                            <td><center><?= $k['time']; ?></center></td>
-                            <td><center><?= $k['activity']; ?></center></td>
-                            <td><center><?date_format($k['date'],"Y/m/d");?></center></td> 
-                         
+                            <td>
+                                <center><?= $k['date']; ?></center>
+                            </td>
+
+                            <td>
+                                <center><?= $k['time']; ?></center>
+                            </td>
+                            <td>
+                                <center><?= $k['activity']; ?></center>
+                            </td>
+
+
                         </tr>
 
                         </tr>
-                    <?php } ?>
-                </tbody>
-                </table>
-                
+                        <?php } ?>
+                    </tbody>
+                    </table>
+
+                </div>
             </div>
-        </div>
-        </div>
+            </div>
 
-    </form>
+        </form>
 </body>
 
 </html>
