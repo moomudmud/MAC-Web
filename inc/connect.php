@@ -2,7 +2,7 @@
 <?php
 $servername = "localhost";
 $username = "root";
-$password = ""; //ไม่ได้ตั้งรหัสผ่านก็ลบ  yourpassword ออก
+$password = "1234"; //ไม่ได้ตั้งรหัสผ่านก็ลบ  yourpassword ออก
 
 
 try {
