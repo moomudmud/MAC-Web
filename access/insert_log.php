@@ -50,7 +50,7 @@ if (isset($name) && isset($lastname) && isset($phone) && isset($access) && isset
                     text: "เข้าระบบ ยินดีต้อนรับ",
                     type: "success"
                 }, function() {
-                    window.history.go(-3); //หน้าที่ต้องการให้กระโดดไป
+                    window.history.go(-3); //หน้าที่ต้องการให้กระโดดไป 
                 });
               }, 1000);
           </script>';
