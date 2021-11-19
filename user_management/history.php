@@ -42,8 +42,7 @@ if (empty($_SESSION['id']) && empty($_SESSION['name']) && empty($_SESSION['lastn
             </div>
             <ul class="nav navbar-nav">
                 <li class="active"><a href="/MAC-Web/register/inside.php">Home</a></li>
-                <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">ผู้ดูแลระบบ <span
-                            class="caret"></span></a>
+                <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">ผู้ดูแลระบบ <span class="caret"></span></a>
                     <ul class="dropdown-menu">
                         <li><a href="/MAC-Web/user_management/user.php">จัดการข้อมูลนักงาน</a></li>
                         <li><a href="#">Access Control</a></li>
@@ -68,18 +67,40 @@ if (empty($_SESSION['id']) && empty($_SESSION['name']) && empty($_SESSION['lastn
                         <h3>ประวัติการเข้า</h3>
                         <table class="table table-striped  table-hover table-responsive table-bordered">
                             <tr>
-                                <td>เบอร์โทรศัพท์ <input type="search" name="q" class="form-control"></td>
-                                <td>ชื่อ <input type="search" name="q" class="form-control"> </td>
+                                <td>เบอร์โทรศัพท์ <input type="search" name="phone" class="form-control"></td>
+                                <td>ชื่อ <input type="search" name="name" class="form-control"> </td>
                             </tr>
 
                             <tr>
-                                <td>วันที่ <input type="date" name="q" class="form-control"></td>
-                                <td>ห้อง <input type="search" name="q" class="form-control"> </td>
+                                <td>วันที่ <input type="date" name="date" class="form-control"></td>
+                                <td>
+                                    ห้อง/ประตู<select name="access" class="form-control">
+                                        <option value="">
+                                            <-- กรุณาเลือก -->
+                                        </option>
+                                        <?php
+                                        include('../inc/connect.php');
+                                        //คิวรี่ข้อมูลมาแสดงในตาราง
+
+                                        $stmt = $conn->prepare("SELECT* FROM mas_access WHERE is_active =1");
+                                        $stmt->execute();
+                                        $result = $stmt->fetchAll();
+                                        foreach ($result as $k) {
+                                        ?>
+                                            <option value="<?= $k['access_name']; ?>"><?= $k['access_name']; ?></option>
+                                        <?php }
+                                        ?>
+                                    </select>
+                                </td>
+                            <tr>
+                                <td align='right'><button type="submit" class="btn btn-primary">ค้นหาข้อมูล</button></a></td>
+                                <td align='left'><button type="submit" class="btn btn-primary">&nbsp;&nbsp;&nbsp;&nbsp;Export&nbsp;&nbsp;&nbsp;&nbsp;</button></a></td>
+
+                            </tr>
                             </tr>
                         </table>
                         <table class="table table-striped  table-hover table-responsive table-bordered">
                             <thead>
-                                <center><button type="submit" class="btn btn-primary">ค้นหาข้อมูล</button></a></center>
                     </div>
                     <div class="col-md-12"> <br></div>
                     <tr>
@@ -104,14 +125,24 @@ if (empty($_SESSION['id']) && empty($_SESSION['name']) && empty($_SESSION['lastn
                         <?php
 
 
-                        if (isset($_GET['q'])) {
-                            $q = "%{$_GET['q']}%";
+                        if (isset($_GET['phone']) or isset($_GET['name']) or isset($_GET['date']) or isset($_GET['access'])) {
+                            $phone = "%{$_GET['phone']}%";
+                            $name = "%{$_GET['name']}%";
+                            $date = date("%{$_GET['date']}%");
+                            $access = "%{$_GET['access']}%";
                             $stmt = $conn->prepare("SELECT*
                                                     FROM history_log
-                                                    WHERE (phone LIKE ?) 
-                                
+                                                    WHERE (phone LIKE :phone OR :phone IS NULL)
+                                                    AND   (name  LIKE :name  OR :name  IS NULL)
+                                                    AND   (date  LIKE :date  OR :date  IS NULL)
+                                                    AND   (access  LIKE :access  OR :access  IS NULL)
+                                                    ORDER BY date desc
                                                     ");
-                            $stmt->execute([$q]);
+                            $stmt->bindParam(':phone', $phone, PDO::PARAM_STR);
+                            $stmt->bindParam(':name', $name, PDO::PARAM_STR);
+                            $stmt->bindParam(':date', $date, PDO::PARAM_STR);
+                            $stmt->bindParam(':access', $access, PDO::PARAM_STR);
+                            $stmt->execute();
                             $result = $stmt->fetchAll();
                         } else {
                             $stmt = $conn->prepare("SELECT* 
@@ -126,26 +157,26 @@ if (empty($_SESSION['id']) && empty($_SESSION['name']) && empty($_SESSION['lastn
 
                         foreach ($result as $k) {
                         ?>
-                        <tr>
-                            <td><?= $k['name']; ?></td>
-                            <td><?= $k['lastname']; ?></td>
-                            <td><?= $k['phone']; ?></td>
-                            <td><?= $k['access']; ?></td>
-                            <td>
-                                <center><?= $k['date']; ?></center>
-                            </td>
+                            <tr>
+                                <td><?= $k['name']; ?></td>
+                                <td><?= $k['lastname']; ?></td>
+                                <td><?= $k['phone']; ?></td>
+                                <td><?= $k['access']; ?></td>
+                                <td>
+                                    <center><?= $k['date']; ?></center>
+                                </td>
 
-                            <td>
-                                <center><?= $k['time']; ?></center>
-                            </td>
-                            <td>
-                                <center><?= $k['activity']; ?></center>
-                            </td>
+                                <td>
+                                    <center><?= $k['time']; ?></center>
+                                </td>
+                                <td>
+                                    <center><?= $k['activity']; ?></center>
+                                </td>
 
 
-                        </tr>
+                            </tr>
 
-                        </tr>
+                            </tr>
                         <?php } ?>
                     </tbody>
                     </table>
