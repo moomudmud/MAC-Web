@@ -44,7 +44,7 @@ if (isset($name) && isset($lastname) && isset($phone) && isset($access) && isset
         $result = $stmt->execute();
         if ($result) {
 
-            header('Location:MAC-Web/index.php');
+            header('MAC-Web/index.php');
          
         }
     }
