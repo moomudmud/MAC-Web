@@ -43,7 +43,6 @@ if (isset($name) && isset($lastname) && isset($phone) && isset($access) && isset
         $stmt->bindParam(':activity', $activity, PDO::PARAM_STR);
         $result = $stmt->execute();
         if ($result) {
-
             echo '<script>
                  setTimeout(function() {
                   swal({
