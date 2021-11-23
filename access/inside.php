@@ -141,31 +141,10 @@ if (isset($_POST['security_level'])) {
     if ($security_level == 1) {
 
         
-        echo '<script>
-        setTimeout(function() {
-            window.location = "'.$url1.'"; //หน้าที่ต้องการให้กระโดดไป 
-         swal({
-             title: "OPENED",
-             text: "เข้าระบบ ยินดีต้อนรับ",
-             type: "info"
-         }, function() {
-            window.location = "'.$url1.'"; //หน้าที่ต้องการให้กระโดดไป 
-         });
-       }, 1000);
-   </script>';
+        echo '<script> window.location = "'.$url1.'";</script>';
     }
     elseif($security_level == 2){
-        echo '<script>
-        setTimeout(function() {
-         swal({
-             title: "OPENED",
-             text: "เข้าระบบ ยินดีต้อนรับ",
-             type: "success"
-         }, function() {
-            window.location = "'.$url2.'"; //หน้าที่ต้องการให้กระโดดไป 
-         });
-       }, 1000);
-   </script>';
+        echo '<script> window.location = "'.$url2.'";</script>';
     }
     
     
