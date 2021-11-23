@@ -43,17 +43,7 @@ if (isset($name) && isset($lastname) && isset($phone) && isset($access) && isset
         $stmt->bindParam(':activity', $activity, PDO::PARAM_STR);
         $result = $stmt->execute();
         if ($result) {
-            echo '<script>
-                 setTimeout(function() {
-                  swal({
-                      title: "มีผู้ใช้แล้วในระบบ",  
-                      text: "กรุณาสมัครใหม่อีกครั้ง",
-                      type: "info"
-                  }, function() {
-                    window.location="'.$url.'";
-                  });
-                }, 1000);
-          </script>';
+            echo '<script>window.location="'.$url.'";</script>';
          
         }
     }
