@@ -43,17 +43,7 @@ if (isset($name) && isset($lastname) && isset($phone) && isset($access) && isset
         $stmt->bindParam(':activity', $activity, PDO::PARAM_STR);
         $result = $stmt->execute();
         if ($result) {
-            echo '<script>
-               setTimeout(function() {
-                swal({
-                    title: "OPENED",
-                    text: "เข้าระบบ ยินดีต้อนรับ",
-                    type: "success"
-                }, function() {
-                    window location = "/MAC-Web/index.php"
-                });
-              }, 1000);
-          </script>';
+            header('Location: http://MAC-Web/index.php');
         }
     }
     //isset 
