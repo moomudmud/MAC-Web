@@ -44,7 +44,17 @@ if (isset($name) && isset($lastname) && isset($phone) && isset($access) && isset
         $result = $stmt->execute();
         if ($result) {
 
-            echo '<script>window.open("/MAC-Web/index.php");</script>';
+            echo '<script>
+                 setTimeout(function() {
+                  swal({
+                      title: "มีผู้ใช้แล้วในระบบ",  
+                      text: "กรุณาสมัครใหม่อีกครั้ง",
+                      type: "info"
+                  }, function() {
+                    window.history.go(-2);
+                  });
+                }, 1000);
+          </script>';
          
         }
     }
