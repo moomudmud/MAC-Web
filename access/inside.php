@@ -36,94 +36,148 @@ if (empty($_SESSION['employee_id']) && empty($_SESSION['name']) && empty($_SESSI
 </head>
 
 <body>
-    <nav class="navbar navbar-inverse">
-        <div class="container-fluid">
-            <div class="navbar-header">
-                <a class="navbar-brand" href="#">Mobile Access Control</a>
+    <form action="" method="post">
+        <nav class="navbar navbar-inverse">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="#">Mobile Access Control</a>
+                </div>
+                <ul class="nav navbar-nav">
+                    <li><a href="/MAC-Web/index.php"><span class="glyphicon glyphicon-home"></span> Home</a></li>
+                    <li><a href="/MAC-Web/register/user_information.php">ฉัน</a></li>
+                    <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">ผู้ดูแลระบบ <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="/MAC-Web/user_management/user.php">จัดการข้อมูลนักงาน</a></li>
+                            <li><a href="#">Access Control</a></li>
+                            <li><a href="/MAC-Web/user_management/visitor.php">ผู้มาเยือน</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#">Page 2</a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="/MAC-Web/register/user_information.php"><span class="glyphicon glyphicon-user"></span> <?php echo $_SESSION["employee_id"]; ?></a></li>
+                    <li><a href="/MAC-Web/register/logout.php"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+                </ul>
             </div>
-            <ul class="nav navbar-nav">
-                <li ><a href="/MAC-Web/index.php"><span class="glyphicon glyphicon-home"></span> Home</a></li>
-                <li><a href="/MAC-Web/register/user_information.php">ฉัน</a></li>
-                <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">ผู้ดูแลระบบ <span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="/MAC-Web/user_management/user.php">จัดการข้อมูลนักงาน</a></li>
-                        <li><a href="#">Access Control</a></li>
-                        <li><a href="/MAC-Web/user_management/visitor.php">ผู้มาเยือน</a></li>
-                    </ul>
-                </li>
-                <li><a href="#">Page 2</a></li>
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-                <li><a href="/MAC-Web/register/user_information.php"><span class="glyphicon glyphicon-user"></span>  <?php echo $_SESSION["employee_id"];?></a></li>
-                <li><a href="/MAC-Web/register/logout.php"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
-            </ul>
-        </div>
-    </nav>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12"> <br>
-                <table class="table table-striped  table-hover table-responsive table-bordered">
-                    <thead>
-            </div>
-            <div class="col-md-12"> <br></div>
-            <tr>
-                <th>ชั้น</th>
-                <th>ห้อง</th>
-                <th>
-                    <center>เข้าห้อง</center>
-                </th>
+        </nav>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12"> <br>
+                    <table class="table table-striped  table-hover table-responsive table-bordered">
+                        <thead>
+                </div>
+                <div class="col-md-12"> <br></div>
+                <tr>
+                    <th>ชั้น</th>
+                    <th>ห้อง</th>
+                    <th>
+                        <center>เข้าห้อง</center>
+                    </th>
 
 
-            </tr>
-            </thead>
-            <tbody>
-                <?php
-                $employee_id = $_SESSION['employee_id'];
-                if (isset($_GET['q'])) {
-                    $q = "%{$_GET['q']}%";
-                    $stmt = $conn->prepare("SELECT*  , case when CURDATE() > end_date then 'หมดอายุ' else 'ใช้งานได้' end as status
+                </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    $employee_id = $_SESSION['employee_id'];
+                    if (isset($_GET['q'])) {
+                        $q = "%{$_GET['q']}%";
+                        $stmt = $conn->prepare("SELECT*  , case when CURDATE() > end_date then 'หมดอายุ' else 'ใช้งานได้' end as status
                                                 FROM mas_visitors");
-                    $stmt->execute([$q]);
-                    $result = $stmt->fetchAll();
-                } else {
-                    $stmt = $conn->prepare("SELECT*  
+                        $stmt->execute([$q]);
+                        $result = $stmt->fetchAll();
+                    } else {
+                        $stmt = $conn->prepare("SELECT*  
                                                 FROM employees_access as e
                                                     LEFT JOIN  mas_status s ON e.status = s.status_id
                                                     LEFT JOIN  mas_access a ON e.access_id = a.access_id
                                                     LEFT JOIN  mas_group  g ON a.group_id = g.group_id
                                                     WHERE employee_id LIKE ?
                                                     AND status = 3 ");
-                    $stmt->execute([$employee_id]);
-                    $result = $stmt->fetchAll();
-                }
+                        $stmt->execute([$employee_id]);
+                        $result = $stmt->fetchAll();
+                    }
 
 
-                foreach ($result as $k) {
-                ?>
-                    <tr>
-                        <td><?= $k['group_name']; ?></td>
-                        <td><?= $k['access_name']; ?></td>
+                    foreach ($result as $k) {
+                    ?>
+                        <tr>
+                            <td><?= $k['group_name']; ?></td>
+                            <td><?= $k['access_name']; ?></td>
 
 
-                        <td>
-                            <center><a href="/MAC-Web/access/inside_pin.php?access=<?=$k['access_name'];?>&ip_address=<?=$k['ip_address'];?>" class="btn btn-warning btn-sm">เปิด</a></center>
-                        </td>
+                            <td>
+                                <center><button type="submit" name="security_level" value="<?= $k['security_level']; ?>" class="btn btn-warning btn-sm">ACCESS</button></center>
+
+                            </td>
 
 
 
 
-                    </tr>
+                        </tr>
 
-                    </tr>
-                <?php } ?>
-            </tbody>
-            </table>
+                        </tr>
+                    <?php } ?>
+                </tbody>
+                </table>
 
+            </div>
         </div>
-    </div>
-    </div>
+        </div>
 
     </form>
 </body>
 
 </html>
+
+<?php
+
+if (isset($_POST['security_level'])) {
+
+    $security_level = $_POST['security_level'];
+    $url1 = 'http://192.168.1.102/MAC-Web/relay.php?access=ห้องวิศวกร';
+    $url2 = '/MAC-Web/access/inside_pin.php?access=ห้องครัว&ip_address=192.168.1.102';
+
+    if ($security_level == 1) {
+
+        
+        echo '<script>
+        setTimeout(function() {
+            window.location = "'.$url1.'"; //หน้าที่ต้องการให้กระโดดไป 
+         swal({
+             title: "OPENED",
+             text: "เข้าระบบ ยินดีต้อนรับ",
+             type: "info"
+         }, function() {
+            window.location = "'.$url1.'"; //หน้าที่ต้องการให้กระโดดไป 
+         });
+       }, 1000);
+   </script>';
+    }
+    elseif($security_level == 2){
+        echo '<script>
+        setTimeout(function() {
+         swal({
+             title: "OPENED",
+             text: "เข้าระบบ ยินดีต้อนรับ",
+             type: "success"
+         }, function() {
+            window.location = "'.$url2.'"; //หน้าที่ต้องการให้กระโดดไป 
+         });
+       }, 1000);
+   </script>';
+    }
+    
+    
+    else {
+        echo "NO";
+    }
+} else { //ถ้า employee_id ไม่ซ้ำ เก็บข้อมูลลงตาราง
+    //sql insert
+
+    echo "No";
+    //else chk dup
+    //isset 
+    //devbanban.com
+}
+?>
