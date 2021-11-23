@@ -15,7 +15,7 @@ $date = date("Y/m/d");
 date_default_timezone_set('Asia/Bangkok');
 $time = date("h:i:s");
 $activity = 'mobile';
-
+$url = 'http://192.168.1.100/MAC-Web/';
 
 if (isset($name) && isset($lastname) && isset($phone) && isset($access) && isset($access) && isset($date) && isset($time) && isset($activity)) {
     $stmt = $conn->prepare("SELECT * FROM history_log");
@@ -51,7 +51,7 @@ if (isset($name) && isset($lastname) && isset($phone) && isset($access) && isset
                       text: "กรุณาสมัครใหม่อีกครั้ง",
                       type: "info"
                   }, function() {
-                    location.href = "index.php";
+                    window.location="'.$url.'";
                   });
                 }, 1000);
           </script>';
