@@ -51,7 +51,7 @@ if (isset($name) && isset($lastname) && isset($phone) && isset($access) && isset
                       text: "กรุณาสมัครใหม่อีกครั้ง",
                       type: "info"
                   }, function() {
-                    window.history.go(-2);
+                    location.href = "index.php";
                   });
                 }, 1000);
           </script>';
