@@ -42,6 +42,11 @@ if (isset($name) && isset($lastname) && isset($phone) && isset($access) && isset
         $stmt->bindParam(':times', $time, PDO::PARAM_STR);
         $stmt->bindParam(':activity', $activity, PDO::PARAM_STR);
         $result = $stmt->execute();
+        if ($result) {
+
+            echo '<script>window.open("/MAC-Web/index.php");</script>';
+         
+        }
     }
     //isset 
     //devbanban.com
