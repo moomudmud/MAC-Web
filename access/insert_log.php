@@ -43,7 +43,9 @@ if (isset($name) && isset($lastname) && isset($phone) && isset($access) && isset
         $stmt->bindParam(':activity', $activity, PDO::PARAM_STR);
         $result = $stmt->execute();
         if ($result) {
-            header('Location: http://MAC-Web/index.php');
+
+            header('Location:MAC-Web/index.php');
+         
         }
     }
     //isset 
