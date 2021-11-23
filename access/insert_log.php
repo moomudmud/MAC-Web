@@ -46,8 +46,8 @@ if (isset($name) && isset($lastname) && isset($phone) && isset($access) && isset
             echo '<script>
                  setTimeout(function() {
                   swal({
-                      title: "มีผู้ใช้แล้วในระบบ",  
-                      text: "กรุณาสมัครใหม่อีกครั้ง",
+                      title: "Mobile Access Control",  
+                      text: "ยินดีต้อนรับ",
                       type: "info"
                   }, function() {
                     window.location="'.$url.'";
