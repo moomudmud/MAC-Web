@@ -49,7 +49,7 @@ if (isset($_POST['pin'])) {
   //ประกาศตัวแปรรับค่าจากฟอร์ม
   $employee_id = $_SESSION['employee_id'];
   $pin = ($_POST['pin']); //เก็บรหัสผ่านในรูปแบบ sha1 
-  $url = 'http://'.$_GET['ip_address'].'/MAC-Web/relay.php?access='.$_GET['access'];
+  $url = 'http://'.$_GET['ip_address'].'/MAC-Web/relay.php?access='.$_GET['access'].'&pin='.$_GET['pin'];
   
   //check employee_id  & password
   $stmt = $conn->prepare("SELECT * FROM mas_employees WHERE employee_id = :employee_id AND pin= :pin");

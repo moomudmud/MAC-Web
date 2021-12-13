@@ -11,10 +11,11 @@
 
     <body>
         <?php
-        system("gpio -g mode 4 out");
-        system("gpio -g write 4 0");
+        $pin = $_GET['pin'];
+        system("gpio -g mode ".$pin." out");
+        system("gpio -g write ".$pin." 0");
         sleep(1);
-        system("gpio -g write 4 1");
-        header( "location: http://http://192.168.1.100/MAC-Web/register/inside.php" );
+        system("gpio -g write ".$pin." 1");
+        header( "location: http://192.168.1.100/MAC-Web/access/insert_log.php?access=".$_GET['access'] );
         ?>
     </body>

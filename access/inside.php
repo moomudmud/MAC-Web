@@ -47,9 +47,10 @@ if (empty($_SESSION['employee_id']) && empty($_SESSION['name']) && empty($_SESSI
                     <li><a href="/MAC-Web/register/user_information.php">ฉัน</a></li>
                     <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">ผู้ดูแลระบบ <span class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            <li><a href="/MAC-Web/user_management/user.php">จัดการข้อมูลนักงาน</a></li>
-                            <li><a href="#">Access Control</a></li>
-                            <li><a href="/MAC-Web/user_management/visitor.php">ผู้มาเยือน</a></li>
+                        <li><a href="/MAC-Web/user_management/user.php">จัดการข้อมูลนักงาน</a></li>
+                        <li><a href="#">Access Control</a></li>
+                        <li><a href="/MAC-Web/user_management/visitor.php">ผู้มาเยือน</a></li>
+                        <li><a href="/MAC-Web/user_management/history.php">ประวัติการเข้า</a></li>
                         </ul>
                     </li>
                     <li><a href="#">Page 2</a></li>
@@ -107,7 +108,7 @@ if (empty($_SESSION['employee_id']) && empty($_SESSION['name']) && empty($_SESSI
 
 
                             <td>
-                                <center><button type="submit" name="security_level" value="<?= $k['security_level']; ?>" class="btn btn-warning btn-sm">ACCESS</button></center>
+                                <center><button type="submit" name="on_click" value="<?= $k['security_level']; ?>,<?= $k['ip_address']; ?>,<?= $k['pin']; ?>,<?= $k['access_name']; ?>" class="btn btn-warning btn-sm">ACCESS</button></center>
 
                             </td>
 
@@ -132,29 +133,41 @@ if (empty($_SESSION['employee_id']) && empty($_SESSION['name']) && empty($_SESSI
 
 <?php
 
-if (isset($_POST['security_level'])) {
+if (isset($_POST['on_click'])) {
 
-    $security_level = $_POST['security_level'];
-    $url1 = 'http://192.168.1.102/MAC-Web/relay.php?access=ห้องวิศวกร';
-    $url2 = '/MAC-Web/access/inside_pin.php?access=ห้องครัว&ip_address=192.168.1.102';
+    $value= $_POST['on_click'];
+    $myArray = explode(',',$value);
+    $security_level = $myArray[0];
+    $ip_address = $myArray[1];
+    $pin = $myArray[2];
+    $access_name = $myArray[3];
+
+    $url1 = 'http://'.$ip_address.'/MAC-Web/relay.php?access='.$access_name.'&pin='.$pin;
+    $url2 = '/MAC-Web/access/inside_pin.php?access='.$access_name.'&ip_address='.$ip_address.'&pin='.$pin;
 
     if ($security_level == 1) {
 
+        #echo($url1);
         
         echo '<script> window.location = "'.$url1.'";</script>';
     }
     elseif($security_level == 2){
+        //echo($access_name);
+        //echo ($myArray);
         echo '<script> window.location = "'.$url2.'";</script>';
     }
     
     
     else {
         echo "NO";
+      
+        $colors  = "red,blue,green,orange";
+        $colorsArray = explode(",", $colors);
     }
 } else { //ถ้า employee_id ไม่ซ้ำ เก็บข้อมูลลงตาราง
     //sql insert
 
-    echo "No";
+ 
     //else chk dup
     //isset 
     //devbanban.com

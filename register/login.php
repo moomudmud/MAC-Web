@@ -25,7 +25,7 @@
           </div>
           <div class="mb-3">
             <div class="col-sm-9">
-              รหัสพนักผ่าน<br>
+              รหัสพนักงาน<br>
               <input type="password" name="password" class="form-control" required minlength="3" placeholder="password">
             </div>
           </div>

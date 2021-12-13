@@ -44,9 +44,10 @@ if (($_SESSION['role'] <> 'admin') or empty($_SESSION['employee_id'])) {
                 <li><a href="/MAC-Web/index.php"><span class="glyphicon glyphicon-home"></span> Home</a></li>
                 <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">ผู้ดูแลระบบ <span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        <li><a href="/MAC-Web/user_management/user.php">จัดการข้อมูลนักงาน</a></li>
+                    <li><a href="/MAC-Web/user_management/user.php">จัดการข้อมูลนักงาน</a></li>
                         <li><a href="#">Access Control</a></li>
                         <li><a href="/MAC-Web/user_management/visitor.php">ผู้มาเยือน</a></li>
+                        <li><a href="/MAC-Web/user_management/history.php">ประวัติการเข้า</a></li>
                     </ul>
                 </li>
                 <li><a href="#">Page 2</a></li>
